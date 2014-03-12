@@ -359,6 +359,8 @@ static int Ljson_encode(lua_State* L)
     flags = luaL_checkinteger(L, 2);
   lua_pop(L, 1);
   json_t* obj = encode_lua_data(L);
+  if (obj->refCount > 1)
+    json_decref(obj);
 
   char* json = json_dumps(obj, flags);
   if (!json)
@@ -400,6 +402,7 @@ static int Ljson_decode(lua_State* L)
   }
 
   decode_json_data(L, obj);
+  json_decref(obj);
   return 1;
 }
 
